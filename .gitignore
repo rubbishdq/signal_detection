@@ -1,0 +1,8 @@
+*.bin
+*.asv
+/Models
+/RFML_dataset/
+/RFML_dataset_new/
+/sd_python_project/.idea/
+/sd_python_project/__pycache__/
+/sd_python_project/dqstest.py
