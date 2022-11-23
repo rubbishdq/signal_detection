@@ -1,6 +1,6 @@
 close all, clear all, clc;
 
-SNR = -20;
+SNR = -10;
 print_num = 3;
 
 figure;

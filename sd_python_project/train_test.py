@@ -5,6 +5,7 @@ from dataset import SigDetDataset, split_dataset
 from torch.utils.data import DataLoader
 import torch
 import torchvision
+import pandas as pd
 import shutil
 import os
 import time
@@ -12,7 +13,7 @@ import random
 
 DatasetDir = '../RFML_dataset_new'
 ModelDir = '../Models'
-ModelFile = 'model-e20.bin'
+ModelFile = None
 TestSize = 0.25
 SNR = -10
 LR = 2e-4
@@ -93,9 +94,9 @@ for e in range(MaxEpoch):
 
         train_acc_temp += np.sum((pred.cpu().numpy() == label.numpy()).astype(np.int32))
         if (i+1) % PrintPeriod == 0:
-            print('batch id: ', i+1)
-            print('train_loss = ', train_loss_temp / PrintPeriod)
-            print('train_acc = ', train_acc_temp / PrintPeriod / BatchSize)
+            print(f'batch id: {e+1} - {i+1}',)
+            print(f'train_loss = {train_loss_temp / PrintPeriod}')
+            print(f'train_acc = {train_acc_temp / PrintPeriod / BatchSize}')
             # print(out.cpu())
             # print(f'{pred.cpu()}')
             # print(label)
@@ -117,11 +118,11 @@ for e in range(MaxEpoch):
         train_loss += loss.item()
 
         _, pred = out.max(1)
-        if (i+1) % PrintPeriod == 0:
-            print(f'e: {e}  i: {i}')
-            print(f'out: {out.detach().cpu().numpy()}')
-            print(f'pred: {pred.cpu().numpy()}')
-            print(f'label: {label.numpy()}')
+        # if (i+1) % PrintPeriod == 0:
+        #     print(f'e: {e}  i: {i}')
+        #     print(f'out: {out.detach().cpu().numpy()}')
+        #     print(f'pred: {pred.cpu().numpy()}')
+        #     print(f'label: {label.numpy()}')
         train_acc += np.sum((pred.cpu().numpy() == label.numpy()).astype(np.int32))
     train_losses.append(train_loss / len(train_dl))
     train_acces.append(train_acc / len(train_dl) / BatchSize)
@@ -135,9 +136,13 @@ for e in range(MaxEpoch):
     test_losses.append(test_loss / len(test_dl))
     test_acces.append(test_acc / len(test_dl) / BatchSize)
     time_now = time.time()
-    print('Epoch ', e+1)
-    print('train_loss = ', train_loss / len(train_dl))
-    print('train_acc = ', train_acc / len(train_dl) / BatchSize)
-    print('test_loss = ', test_loss / len(test_dl))
-    print('test_acc = ', test_acc / len(test_dl) / BatchSize)
-    print('time elapsed: ', time_now-time_start, 's')
+    print(f'Epoch {e+1}')
+    print(f'train_loss = {train_loss / len(train_dl)}')
+    print(f'train_acc = {train_acc / len(train_dl) / BatchSize}')
+    print(f'test_loss = {test_loss / len(test_dl)}')
+    print(f'test_acc = {test_acc / len(test_dl) / BatchSize}')
+    print(f'time elapsed: {time_now-time_start} s')
+
+df = pd.DataFrame({'Train loss': train_losses, 'Train acc': train_acces,
+                   'Test loss': test_losses, 'Test acc': test_acces}, index=range(1, MaxEpoch+1))
+print(df)

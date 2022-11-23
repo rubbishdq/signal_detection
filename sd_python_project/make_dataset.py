@@ -12,7 +12,7 @@ fix_all_seeds(2022)
 
 DatasetDir = '../RFML_dataset'
 TargetDir = '../RFML_dataset_new'
-N_DataUsed = 256   # determine how much data is used
+N_DataUsed = 4096   # determine how much data is used
 N_Noise = N_DataUsed
 SigLen = 1024
 SNR = -10
